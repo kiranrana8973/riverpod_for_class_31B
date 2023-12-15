@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_for_class/view_model/counter_view_model.dart';
 
 // 1. Provider -> Jasle state lai provide garne
 // 2. Consumer -> Jasle state lai consumer garne
@@ -11,16 +12,12 @@ final appBarTitleProvider = Provider<String>((ref) {
   return "Coutner view";
 });
 
-// 2. create a counter provider
-final counterProvider = StateProvider<int>((ref) {
-  return 1;
-});
-
 class CounterView extends ConsumerWidget {
   const CounterView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final value = ref.watch(counterViewModelProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -29,7 +26,7 @@ class CounterView extends ConsumerWidget {
       ),
       body: Center(
         child: Text(
-          ref.watch(counterProvider).toString(),
+          value.toString(),
           style: const TextStyle(
             fontSize: 50,
           ),
@@ -40,15 +37,14 @@ class CounterView extends ConsumerWidget {
         children: [
           FloatingActionButton(
             onPressed: () {
-              ref.read(counterProvider.notifier).state++;
+              ref.read(counterViewModelProvider.notifier).increment();
             },
             child: const Icon(Icons.add),
           ),
           const SizedBox(height: 8),
           FloatingActionButton(
             onPressed: () {
-              if (ref.read(counterProvider.notifier).state == -2) return;
-              ref.read(counterProvider.notifier).state--;
+              ref.read(counterViewModelProvider.notifier).decrement();
             },
             child: const Icon(Icons.remove),
           ),
